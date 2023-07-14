@@ -1,0 +1,48 @@
+
+// PIC16F877A Configuration Bit Settings
+
+// 'C' source line config statements
+
+// CONFIG
+#pragma config FOSC = EXTRC     // Oscillator Selection bits (RC oscillator)
+#pragma config WDTE = OFF       // Watchdog Timer Enable bit (WDT disabled)
+#pragma config PWRTE = OFF      // Power-up Timer Enable bit (PWRT disabled)
+#pragma config BOREN = OFF      // Brown-out Reset Enable bit (BOR disabled)
+#pragma config LVP = OFF        // Low-Voltage (Single-Supply) In-Circuit Serial Programming Enable bit (RB3 is digital I/O, HV on MCLR must be used for programming)
+#pragma config CPD = OFF        // Data EEPROM Memory Code Protection bit (Data EEPROM code protection off)
+#pragma config WRT = OFF        // Flash Program Memory Write Enable bits (Write protection off; all program memory may be written to by EECON control)
+#pragma config CP = OFF         // Flash Program Memory Code Protection bit (Code protection off)
+
+// #pragma config statements should precede project file includes.
+// Use project enums instead of #define for ON and OFF.
+
+#include <xc.h>
+#define _XTAL_FREQ 6000000
+
+unsigned char value;
+
+void main()
+{
+    TRISB=0XF0; //1111 0000     set TRISB Bits RB7,RB6,RB5 and RB4 as Input. RB3,RB2,RB1 and RB0 is in Don't care condition so we set as either 0 or 1 
+    TRISC=0X00; //0000 0000     set TRISC Bits as output(RB2 && RC3)
+    PORTB=0X00; //0000 0000     RULE: we can't able to change the bit if we configured as Input in pin configuration.
+    PORTC=0X00; //0000 0000     Initially Two LEDs should be in the off stage.
+    while(1)
+    {
+        value=PORTB;// Assign PORTB values to value variable.
+        switch(value)
+        {
+            
+            case 0XE0: PORTC=0X08; // case 1110 0000 - Press RB4 0000 1000-RC3 ON RC2 OFF
+            break;
+            case 0XD0: PORTC=0X0C; // case 1101 0000-  Press RB5 0000 1100-RC3 ON RC2 ON
+            break;
+            case 0XB0: PORTC=0X00; // case 1011 0000-  Press RB6 0000 0000-R3 off RC2 off
+            break;
+            case 0X70: PORTC=0X04; //  case0111 0000-  Press RB7 0000 0100-RB3 oFF RC2 ON
+            break;
+            
+        }
+    }
+}
+
