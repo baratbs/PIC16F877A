@@ -1,0 +1,52 @@
+#include<xc.h>
+#define _XTAL_FREQ 6000000
+void init(void);
+void pwmchange(void);
+unsigned char pwmlow10,pwmhigh10;
+unsigned char pwmlow50,pwmhigh50;
+unsigned char pwmlow80,pwmhigh80;
+void main(void)
+{
+init();
+while(1)
+{
+pwmchange();
+}
+}
+void init()
+{
+TRISC=0xfB;
+CCP1CON=0x3C;
+CCPR1L=0X00;
+T2CON=0X06;
+PR2=0x5E; //0101 1110 //94
+//for 10% Duty cycle
+//38 //0010 0110
+pwmhigh10=0x09;
+// CCPR1L value Excluding 2 LSBs
+pwmlow10=0x20;
+//4th and 5th for CCP1CON Registor.
+
+//for 50% Duty cycle
+//188 //1011 1100
+pwnhigh50=0x2F;
+pwmlow50=0x00;
+//for 80% Duty cycle
+//01 0010 1100
+pwmhigh80=0x4B;
+pwnlow80=0x00;
+}
+
+void pwmchange()
+{
+CCPR1L=pwmhign10;
+CCP1CON=(CCP1CON&0xCF)|pwmlow10;
+__delay_ms(3000);
+CCPR1L=pwmhigh50;
+CCP1CON=(CCP1CON&0XCF)|pwmlow50;
+__delay_ms(3000);
+CCPR1L=pwmhigh80;
+CCP1CON=(CCP1CON&0xCF)|pwmlow80;
+__delay_ms(3000);
+}
+
